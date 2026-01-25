@@ -1,130 +1,275 @@
-# Challenge 9 - Restaurant Web Frontend (Next JS + TypeScript)
+App Restaurant (Challenge 7)
 
-# Description
+A mini end‑to‑end restaurant ordering application built with Next.js, Redux Toolkit, and TypeScript.
+From browsing restaurants → selecting menus → cart → checkout → order history.
+A complete data‑flow loop.
 
-Membangun Frontend MVP untuk aplikasi Restaurant yang terhubung ke backend. Fokus
-pada alur dasar: eksplor menu, filter & pencarian, keranjang, dan checkout sederhana
+A. OVERVIEW
 
-# Repo Backend & Figma
+Foody is a small but complete food‑ordering web app created as part of Bootcamp Challenge 7.
 
-- Backend : https://be-restaurant-api-889893107835.asia-southeast2.run.app/apiswagger/
+The goal of this challenge was not only to render data from an API, but to design a realistic application flow:
 
-- [Figma Design Link](https://www.figma.com/design/1By7DB1gDCNEoW62UqLUrA/Restaurant-App?node-id=2210-441096&t=Mb8iKuBNaG5z903g-1)
+Restaurant → Menu → Cart → Checkout → Orders
 
-# Tech Stack Wajib
+This project demonstrates:
 
-- Next JS + TypeScript — framework & type safety
-- Tailwind CSS — styling cepat, utility-first
-- shadcn/ui — komponen UI siap pakai
-- Redux Toolkit — simpan filter, cart, dan state UI lain (client state)
-- TanStack Query (React Query) — fetching & caching server state
-- Optimistic UI — UX responsif(mis. tambah/hapus cart)
-- Day.js — format waktu/tanggal
+Modular React architecture
 
-# MVP Scope (Fitur Minimum)
+Global state management using Redux Toolkit
 
-1. Halaman Menu (Home): daftar makanan & minuman, harga, kategori, rating, foto.
-2. Filter & Sort: berdasarkan kategori, harga, rating; simpan di Redux.
-3. Pencarian: search by name/keyword (client-side atau server-side).
-4. Detail/Quick View: modal atau halaman detail sederhana (opsional).
-5. Keranjang (Cart): tambah, ubah qty, hapus item — Optimistic UI.
-6. Checkout Sederhana: form nama/no HP/alamat(tanpa payment gateway).
-7. Riwayat Pesanan (History): daftar pesanan yang pernah dibuat (sederhana).
-8. State Management: server state via React Query, UI state via Redux.
-9. Responsif: mobile-first, minimal breakpoint sm/md/lg.
-10. Aksesibilitas: alt text, focus ring, warna kontras cukup.
-11. Deploy ke vercel. (Optional)
+Typed data flow with TypeScript
 
-# Pemisahan State: Redux vs React Query
+Client‑side routing with Next.js App Router
 
-- React Query (Server State): menu, kategori, detail item, order list.
-- Redux Toolkit (Client/UI State): filters, sort, search query, cart, modal open/close.
+Clean UX for a basic ordering experience
 
-# Struktur Project (Direkomendasikan)
+B. USER FLOW
 
-```
+Browse Restaurants
+Users see a list of restaurants fetched from API.
+
+View Restaurant Menu
+Clicking a restaurant opens its menu page.
+
+Add to Cart
+Users add menu items to cart and manage quantity.
+
+Cart Page
+
+View items
+
+Increase / decrease quantity
+
+Remove items
+
+Clear cart
+
+See total price
+
+Checkout Page
+
+Review order summary
+
+Input:
+
+Customer name
+
+Table number
+
+Optional note
+
+Submit order
+
+Orders Page
+
+View all submitted orders
+
+See:
+
+Customer name
+
+Table number
+
+Items & quantities
+
+Total price
+
+Timestamp
+
+Notes (if any)
+
+
+C. TECH STACK
+
+Next.js 14+ (App Router)
+
+React 18
+
+TypeScript
+
+Redux Toolkit
+
+React‑Redux
+
+Axios
+
+Tailwind CSS
+
+D. Project Structure
+
 src/
-├─ app/ # Entry & routing (Vite/CRA: src/main.tsx + src/App.tsx)
-├─ pages/ # Page-level components (Home, Cart, Checkout, Orders)
-├─ features/
-│ ├─ cart/ # Redux slice cart + hooks
-│ └─ filters/ # Redux slice filter/sort/search
-├─ components/ # UI reusable (Navbar, Footer, ProductCard, EmptyState)
-├─ ui/ # shadcn/ui wrappers jika perlu
-├─ services/
-│ ├─ api/ # axios instance, request helpers
-│ └─ queries/ # React Query hooks (useMenusQuery, dst.)
-├─ types/ # TypeScript types (MenuItem, Category, Order, dst.)
-├─ lib/ # utils (formatCurrency, cn, etc.)
-├─ styles/ # global.css, tailwind.css
-├─ assets/ # images/icons jika perlu
-└─ config/ # env, constants, route paths
-```
+├── app/ # Next.js App Router pages
+│ ├── layout.tsx
+│ ├── page.tsx # Home (restaurants)
+│ ├── restaurants/[id]/page.tsx
+│ ├── cart/page.tsx
+│ ├── checkout/page.tsx
+│ └── orders/page.tsx
+│
+├── components/ # Reusable UI components
+│ ├── Navbar.tsx
+│ ├── cart/CartItemRow.tsx
+│ ├── RestaurantCard.tsx
+│ └── ProductCard.tsx
+│
+├── features/ # Redux slices + hooks
+│ ├── cart/
+│ │ ├── cartSlice.ts
+│ │ └── hooks.ts
+│ └── orders/
+│ ├── orderSlice.ts
+│ └── hooks.ts
+│
+├── services/ # API services
+│ ├── useRestaurants.ts
+│ └── useMenu.ts
+│
+├── store/
+│ └── index.ts # Redux store setup
+│
+├── lib/ # Utilities
+│ ├── axios.ts
+│ └── format.ts
+│
+└── styles/
+└── global.css
 
-# Persiapan Project (Langkah Cepat)
 
-1. Install Tailwind CSS: sesuai dokumentasi Tailwind (init & konfigurasi).
-2. Install shadcn/ui: setup sesuai docs; generate komponen yang dibutuhkan (Button,
-   Input, Card, Dialog).
-3. Install Redux Toolkit & React Query: `npm i @reduxjs/toolkit react-redux	
-@tanstack/react-query	axios	dayjs`
-4. Siapkan `axios` instance (`/services/api/axios.ts`) dan baseURL dari backend.
-5. Buat store Redux (`/features/store.ts`) dan slice (cart, filters).
-6. Bungkus App dengan `<Provider>`(Redux) dan `<QueryClientProvider>`(React Query).
+E. CORE FEATURES
 
-# Environment & Konfigurasi
+1. Restaurant Listing
 
-- Buat `.env` dengan `VITE_API_BASE_URL	=	link	Api (sesuaikan).
-- Axios instance membaca `import.meta.env.VITE_API_BASE_URL`.
-- Hindari hard-code URL API di komponen.
+Fetches restaurant data from API
 
-# Getting Started
+Displays restaurant name & rating
 
-for this project first, then to run the app, run
+2. Menu Page
 
-```
+Fetches menu by restaurant ID
+
+Displays menu cards
+
+Add to cart button
+
+3. Cart System (Redux)
+
+State managed by cartSlice:
+
+{
+items: CartItem[]
+totalQty: number
+totalPrice: number
+}
+
+Supported actions:
+
+addItem
+
+removeItem
+
+increaseQty
+
+decreaseQty
+
+clearCart
+
+4. Checkout
+
+Input fields:
+
+Customer name
+
+Table number
+
+Optional note
+
+On submit:
+
+Creates Order object
+
+Dispatches addOrder
+
+Clears cart
+
+Redirects to Orders page
+
+5. Orders History
+
+State managed by orderSlice:
+
+type Order = {
+id: string
+customerName: string
+tableNumber: string
+note?: string
+items: CartItem[]
+total: number
+createdAt: string
+}
+
+Displays:
+
+Customer name
+
+Table number
+
+Timestamp
+
+Ordered items
+
+Total price
+
+Optional note
+
+
+F. DATA FLOW LOOP
+
+Restaurants → Menu → Cart → Checkout → Orders
+↑___________________________________|
+
+This ensures:
+
+Orders reflect actual cart content
+
+Checkout summary matches cart state
+
+Orders page reflects submitted orders
+
+G. INSTALLATION & RUN
+
+# install dependencies
+npm install
+
+# run development server
 npm run dev
-```
 
-on terminal
+Open:
 
-Study the Figma Design: Open the Figma link and thoroughly examine the design. Understand the layout, spacing, colors, typography, and responsive behavior.
+http://localhost:3000
 
-HTML Structure: Open the public/index.html file. Begin by structuring the page with HTML elements that mirror the design.
 
-Tailwind CSS: Use Tailwind CSS classes directly within your HTML elements to apply styles. For example:
+G. CHALLENGE 7 OBJECTIVES (ALL MET)
 
-<div class="flex justify-center items-center">...</div>
 
-<h1 class="text-3xl font-bold text-blue-600">...</h1>
+H. FUTURE IMPROVEMENT
 
-Test in the Browser: Run npm run dev to see it on your browser
+Out of challenge scope, but ready for production extension:
 
-Iterate: Continue to refine your HTML and Tailwind CSS until your webpage accurately matches the Figma design.
+Authentication (login)
 
-# Important Notes
+Backend persistence for orders
 
-You can modify the folder structure only on src and public folder, don't change anything related to project setup
+Branch / restaurant outlet selection
 
-Tailwind CSS Documentation: Refer to the official Tailwind CSS documentation (https://tailwindcss.com/docs) for information on available classes and how to use them.
+Payment gateway integration
 
-Figma Inspection: Use the "Inspect" feature in Figma to get precise measurements, colors, and font styles from the design.
+Order status (preparing, ready, served)
 
-# Evaluation System
+Admin dashboard
 
-The evaluation for this assignment will be based on the following criteria:
 
-1.  **Basic concept and project structure:** How you understand the concept of next js and how you manage the project structure
-2.  **Routing and rendering method:** How you manage routing and rendering method (CSR, SSR, SSG)
-3.  **Next js advance features and optimizations:** How you use next js optimized tools like next/image etc.
-4.  **Deployment & best practice:** How you deploy your app on vercel
 
----
+Author
 
-# How to Upload your Challenge
-
-Check this module: [click this](https://orchid-clematis-3e4.notion.site/Panduan-Penggunaan-Git-Untuk-Upload-Assignment-e2d80a19b3684f5d8f1a4209dcf85445?pvs=73)
-
----
-
-🎉 Congratulations on working on this assignment! Utilize the _playground_ feature in Figma to help you understand how the design should look on various devices. Keep experimenting and don't hesitate to look for references if you encounter difficulties. You can definitely produce great work! 🚀 Keep up the spirit, cheers! 🎈
+PURWITA MUSAFFA
